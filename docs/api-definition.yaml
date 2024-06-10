@@ -1,0 +1,47 @@
+openapi: 3.0.3
+info:
+  title: Menu REST API
+  version: 0.0.1
+tags:
+  - name: menus
+servers:
+  - url: http://localhost:8080/
+    description: 開発環境
+paths:
+  /menus/recommend:
+    get:
+      tags:
+        - menus
+      summary: おすすめのメニュー取得
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RecipeItem"
+        401:
+          description: 認証エラー
+        403:
+          description: 認可エラー
+        404:
+          description: リソース未検出エラー
+        500:
+          description: サーバーエラー
+components:
+  schemas:
+    RecipeItem:
+      type: object
+      properties:
+        recipeName:
+          type: string
+          description: 料理名
+          example: 鶏の唐揚げ
