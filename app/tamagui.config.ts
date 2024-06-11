@@ -11,7 +11,7 @@ const appConfig = createTamagui({
     },
     light: {
       color: "#000",
-      background: "#F7CF31",
+      background: "#fff",
     },
   },
 });
