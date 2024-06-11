@@ -36,7 +36,14 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <TamaguiProvider config={appConfig} defaultTheme="light">
         <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="(tabs)"
+            options={{ title: "ホーム", headerShown: false }}
+          />
+          <Stack.Screen
+            name="recommend"
+            options={{ title: "提案された献立" }}
+          />
           <Stack.Screen name="+not-found" />
         </Stack>
       </TamaguiProvider>
