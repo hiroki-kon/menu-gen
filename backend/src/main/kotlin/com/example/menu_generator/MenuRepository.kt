@@ -10,6 +10,9 @@ import org.springframework.stereotype.Repository
 import org.springframework.web.client.RestTemplate
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.support.GeneratedKeyHolder
+import java.sql.Statement
 
 
 data class ClaudeMessage(
@@ -42,7 +45,7 @@ class RestConfig {
 }
 
 @Repository
-class MenuRepository( val restTemplate: RestTemplate) {
+class MenuRepository(val restTemplate: RestTemplate, val jdbcTemplate: JdbcTemplate) {
 
     fun getRecommendMenu(content: String): Array<Recipe> {
 
@@ -66,5 +69,18 @@ class MenuRepository( val restTemplate: RestTemplate) {
         val recipes = mapper.readValue<Array<Recipe>>(json)
 
         return recipes
+    }
+
+    fun saveFavoriteRecipe(recipe: Recipe): Int {
+        val keyHolder = GeneratedKeyHolder()
+        jdbcTemplate.update({ connection ->
+            val ps = connection.prepareStatement("INSERT INTO saved_recipe (name, description, ingredients) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS)
+            ps.setObject(1, recipe.recipeName)
+            ps.setObject(2, recipe.description)
+            ps.setObject(3, recipe.ingredients)
+            ps
+        }, keyHolder)
+
+        return keyHolder.keys?.get("recipe_id") as Int
     }
 }

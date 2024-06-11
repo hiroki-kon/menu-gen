@@ -33,6 +33,7 @@ class MenuGeneratorApplicationTests(
 		assertThat(response.statusCode, equalTo(HttpStatus.OK))
 	}
 
+//	TODO: このテストをしっかり行う
 	@Test
 	fun `recomendへのGETリクエストは文字を返す`() {
 		val response = restTemplate.getForEntity("http://localhost:$port/menus/recommend?query=test", String::class.java)
@@ -40,6 +41,8 @@ class MenuGeneratorApplicationTests(
 		// レスポンスのステータスコードは OK である。
 		assertThat(body, equalTo("hogehogehoge"))
 	}
+
+
 
 
 }
