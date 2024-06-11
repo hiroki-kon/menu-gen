@@ -116,4 +116,8 @@ class MenuRepository(
         val recipe = jdbcTemplate.query("select recipe_id, name, description, ingredients from saved_recipe", recipeRowMapper)
         return recipe.toTypedArray()
     }
+
+    fun deleteFavoriteRecipe(id: Int) {
+        jdbcTemplate.update("delete from saved_recipe where recipe_id = ?", id)
+    }
 }

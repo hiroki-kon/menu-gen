@@ -31,4 +31,8 @@ class MenuService(val menuRepository: MenuRepository) {
     fun getFavoriteRecipes(): Array<Recipe> {
         return menuRepository.getFavoriteRecipes()
     }
+
+    fun deleteFavoriteRecipes(id: Int) {
+        menuRepository.deleteFavoriteRecipe(id)
+    }
 }

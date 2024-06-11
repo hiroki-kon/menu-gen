@@ -32,4 +32,9 @@ class MenuController(val menuService: MenuService) {
         return menuService.getFavoriteRecipes()
     }
 
+    @DeleteMapping("/favorites/{id}")
+    fun deleteFavoriteRecipe(@PathVariable id: Int){
+        menuService.deleteFavoriteRecipes(id)
+    }
+
 }
