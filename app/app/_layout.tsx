@@ -33,9 +33,14 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={DefaultTheme}>
       <TamaguiProvider config={appConfig} defaultTheme="light">
-        <Stack>
+        <Stack
+          screenOptions={{
+            headerTintColor: "#F7CE00",
+            headerTitleStyle: { color: "#1C1500" },
+          }}
+        >
           <Stack.Screen
             name="(tabs)"
             options={{ title: "ホーム", headerShown: false }}

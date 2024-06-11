@@ -3,19 +3,20 @@ import React from "react";
 
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { ChefHat, List } from "@tamagui/lucide-icons";
 
 export default function TabLayout() {
-
   return (
     <Tabs>
       <Tabs.Screen
         name="index"
         options={{
           title: "ホーム",
+          tabBarActiveTintColor: "#1C1500",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "home" : "home-outline"}
-              color={color}
+            <ChefHat
+              color={focused ? "$yellow9Light" : color}
+              fill={focused ? "#F7CE00" : color}
             />
           ),
         }}
@@ -24,10 +25,11 @@ export default function TabLayout() {
         name="explore"
         options={{
           title: "Explore",
+          tabBarActiveTintColor: "#1C1500",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "code-slash" : "code-slash-outline"}
-              color={color}
+            <List
+              color={focused ? "$yellow9Light" : color}
+              fill={focused ? "#F7CE00" : color}
             />
           ),
         }}
