@@ -11,8 +11,13 @@ import org.springframework.web.client.RestTemplate
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.support.GeneratedKeyHolder
+import org.springframework.stereotype.Component
+import java.sql.ResultSet
 import java.sql.Statement
+import java.util.*
+import java.util.stream.Collectors
 
 
 data class ClaudeMessage(
@@ -44,8 +49,31 @@ class RestConfig {
     }
 }
 
+@Component
+class RecipeRowMapper: RowMapper<Recipe> {
+    override fun mapRow(rs: ResultSet, rowNum: Int): Recipe {
+        return Recipe(
+            recipe_id = rs.getInt(1),
+            recipeName = rs.getString(2),
+            description = rs.getString(3),
+            ingredients = Arrays.asList(
+                rs.getArray(4))
+                .flatMap { e -> e.toString()
+                    .drop(1)
+                    .dropLast(1)
+                    .split(",")
+                }
+                .toTypedArray(),
+        )
+    }
+}
+
 @Repository
-class MenuRepository(val restTemplate: RestTemplate, val jdbcTemplate: JdbcTemplate) {
+class MenuRepository(
+    val restTemplate: RestTemplate,
+    val jdbcTemplate: JdbcTemplate,
+    val recipeRowMapper: RecipeRowMapper
+) {
 
     fun getRecommendMenu(content: String): Array<Recipe> {
 
@@ -82,5 +110,10 @@ class MenuRepository(val restTemplate: RestTemplate, val jdbcTemplate: JdbcTempl
         }, keyHolder)
 
         return keyHolder.keys?.get("recipe_id") as Int
+    }
+
+    fun getFavoriteRecipes(): Array<Recipe> {
+        val recipe = jdbcTemplate.query("select recipe_id, name, description, ingredients from saved_recipe", recipeRowMapper)
+        return recipe.toTypedArray()
     }
 }

@@ -20,11 +20,16 @@ class MenuController(val menuService: MenuService) {
         return menuService.getRecommendMenu(query)
     }
 
-    @PostMapping("/favorite")
+    @PostMapping("/favorites")
     fun saveFavoriteRecipe(@RequestBody recipe: Recipe): FavoriteRecipeResponse {
 
         val id = menuService.saveFavoriteRecipe(recipe)
         return FavoriteRecipeResponse(id)
+    }
+
+    @GetMapping("/favorites")
+    fun getFavoriteRecipes(): Array<Recipe> {
+        return menuService.getFavoriteRecipes()
     }
 
 }

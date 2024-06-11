@@ -27,4 +27,8 @@ class MenuService(val menuRepository: MenuRepository) {
     fun saveFavoriteRecipe(recipe: Recipe): Int {
         return menuRepository.saveFavoriteRecipe(recipe)
     }
+
+    fun getFavoriteRecipes(): Array<Recipe> {
+        return menuRepository.getFavoriteRecipes()
+    }
 }
