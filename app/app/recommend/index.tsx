@@ -95,7 +95,6 @@ export default function RecommendScreen() {
           bg="$yellow9Light"
           minWidth="80%"
           onPress={async () => {
-            console.log(selectedRecipes);
             const date = new Date();
             const request = {
               startAt: `${date.getFullYear()}-${(date.getMonth() + 1)
