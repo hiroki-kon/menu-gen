@@ -37,4 +37,11 @@ class MenuController(val menuService: MenuService) {
         menuService.deleteFavoriteRecipes(id)
     }
 
+    @PostMapping("/weekly")
+    fun saveWeeklyRecipes(@RequestBody weeklyRecipes: WeeklyRecipes){
+        menuService.saveWeeklyRecipes(startAt = weeklyRecipes.startAt, recipes = weeklyRecipes.recipes)
+
+        return
+    }
+
 }

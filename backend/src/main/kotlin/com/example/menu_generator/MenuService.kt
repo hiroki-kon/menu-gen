@@ -1,6 +1,7 @@
 package com.example.menu_generator
 
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class MenuService(val menuRepository: MenuRepository) {
@@ -34,5 +35,9 @@ class MenuService(val menuRepository: MenuRepository) {
 
     fun deleteFavoriteRecipes(id: Int) {
         menuRepository.deleteFavoriteRecipe(id)
+    }
+
+    fun saveWeeklyRecipes(startAt: LocalDate, recipes: Array<Recipe>) {
+        menuRepository.saveWeeklyRecipes(startAt, recipes)
     }
 }

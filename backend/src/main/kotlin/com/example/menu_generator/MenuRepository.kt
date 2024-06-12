@@ -14,8 +14,10 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.sql.ResultSet
 import java.sql.Statement
+import java.time.LocalDate
 import java.util.*
 import java.util.stream.Collectors
 
@@ -119,5 +121,48 @@ class MenuRepository(
 
     fun deleteFavoriteRecipe(id: Int) {
         jdbcTemplate.update("delete from saved_recipe where recipe_id = ?", id)
+    }
+
+    @Transactional
+    fun saveWeeklyRecipes(startAt: LocalDate, recipes: Array<Recipe>) {
+
+        jdbcTemplate.update("delete from weekly_recipes")
+        jdbcTemplate.update("delete from weekly_recipe")
+
+        val weekKeyHolder = GeneratedKeyHolder()
+        jdbcTemplate.update({ connection ->
+            val ps = connection.prepareStatement("INSERT INTO week (start_at) VALUES (?)", Statement.RETURN_GENERATED_KEYS)
+            ps.setObject(1, startAt)
+            ps
+        }, weekKeyHolder)
+
+        val week_id = weekKeyHolder.keys?.get("week_id") as Int
+
+        val insertRecipeSql = """
+            INSERT INTO weekly_recipe (name, description, ingredients)
+            VALUES (?, ?, ?)
+        """.trimIndent()
+
+        val recipeIds: MutableList<Int> = mutableListOf()
+        for (recipe in recipes) {
+            val recipeKeyHolder = GeneratedKeyHolder()
+            jdbcTemplate.update({ connection ->
+                val ps = connection.prepareStatement(insertRecipeSql, Statement.RETURN_GENERATED_KEYS)
+                ps.setObject(1, recipe.recipeName)
+                ps.setObject(2, recipe.description)
+                ps.setObject(3, recipe.ingredients)
+                ps
+            }, recipeKeyHolder)
+            recipeIds.add(recipeKeyHolder.keys?.get("recipe_id") as Int)
+        }
+
+        for ((index, recipeId) in recipeIds.withIndex()) {
+            jdbcTemplate.update(
+                "INSERT INTO weekly_recipes (week_id, recipe_id, day_num) VALUES (?, ?, ?)",
+                week_id,
+                recipeId,
+                index + 1
+            )
+        }
     }
 }
