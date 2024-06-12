@@ -3,7 +3,7 @@ import React from "react";
 
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { ChefHat, List } from "@tamagui/lucide-icons";
+import { ChefHat, List, Utensils} from "@tamagui/lucide-icons";
 
 export default function TabLayout() {
   return (
@@ -15,6 +15,19 @@ export default function TabLayout() {
           tabBarActiveTintColor: "#1C1500",
           tabBarIcon: ({ color, focused }) => (
             <ChefHat
+              color={focused ? "$yellow9Light" : color}
+              fill={focused ? "#F7CE00" : color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="menu"
+        options={{
+          title: "献立",
+          tabBarActiveTintColor: "#1C1500",
+          tabBarIcon: ({ color, focused }) => (
+            <Utensils
               color={focused ? "$yellow9Light" : color}
               fill={focused ? "#F7CE00" : color}
             />

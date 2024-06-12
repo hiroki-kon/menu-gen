@@ -1,4 +1,4 @@
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   Avatar,
@@ -16,11 +16,18 @@ import { useLocalSearchParams } from "expo-router";
 import { Recipe } from "@/types/recipe";
 import { LikeButton } from "@/components/LikeButton";
 import axios from "axios";
+import { LogBox } from 'react-native'
+
+LogBox.ignoreLogs([
+  "[Reanimated] Couldn't determine the version of the native part of Reanimated.",
+  /Cannot update a component/,
+])
 
 export default function RecommendScreen() {
   const { data } = useLocalSearchParams();
-  const [selectedRecipe, setSelectedRecipe] = useState<Recipe[]>([]);
+  const [selectedRecipes, setSelectedRecipes] = useState<Recipe[]>([]);
   const [recipes, setRecipes] = useState<Recipe[]>(JSON.parse(data as string));
+  const router = useRouter();
 
   return (
     <View width="100%" alignItems="center" justifyContent="center">
@@ -35,9 +42,9 @@ export default function RecommendScreen() {
                     size="$4"
                     onCheckedChange={(checked) => {
                       if (checked === true) {
-                        setSelectedRecipe((preState) => [...preState, recipe]);
+                        setSelectedRecipes((preState) => [...preState, recipe]);
                       } else {
-                        setSelectedRecipe((preState) =>
+                        setSelectedRecipes((preState) =>
                           preState.filter(
                             (e) => e.recipeName !== recipe.recipeName
                           )
@@ -83,9 +90,35 @@ export default function RecommendScreen() {
           ))}
         </YGroup>
       </ScrollView>
-      {selectedRecipe.length >= 1 && (
-        <Button bg="$yellow9Light" minWidth="80%">
-          <Text>{selectedRecipe.length}項目で献立を作成</Text>
+      {selectedRecipes.length >= 1 && (
+        <Button
+          bg="$yellow9Light"
+          minWidth="80%"
+          onPress={async () => {
+            console.log(selectedRecipes);
+            const date = new Date();
+            const request = {
+              startAt: `${date.getFullYear()}-${(date.getMonth() + 1)
+                .toString()
+                .padStart(2, "0")}-${(date.getDay() + 1)
+                .toString()
+                .padStart(2, "0")}`,
+              recipes: selectedRecipes.map((recipe) => ({
+                recipeName: recipe.recipeName,
+                description: recipe.description,
+                ingredients: recipe.ingredients,
+              })),
+            };
+            await axios.post(
+              `${process.env.EXPO_PUBLIC_API_URL}/menus/weekly`,
+              request
+            );
+            router.push({
+              pathname: "/menu",
+            });
+          }}
+        >
+          <Text>{selectedRecipes.length}項目で献立を作成</Text>
         </Button>
       )}
     </View>

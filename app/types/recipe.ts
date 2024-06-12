@@ -4,3 +4,10 @@ export type Recipe = {
   description: string;
   ingredients: string[];
 };
+
+export type WeeklyRecipe = {
+
+    startAt: string;
+    recipes: Recipe[]
+
+}
