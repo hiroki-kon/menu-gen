@@ -17,13 +17,6 @@ export function LikeButton({ onPress, defaultValue = false }: Props) {
   const [isFirst, setIsFirst] = useState<boolean>(true);
 
   const like = (value: any) => {
-    if (isFirst === true && value === true) {
-      setIsFirst(false);
-      opacity.setValue(0);
-      reverseOpacity.setValue(1);
-      setLiked(value);
-      return;
-    }
     Animated.sequence([
       Animated.timing(scale, {
         toValue: 0.9,
