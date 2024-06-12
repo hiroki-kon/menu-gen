@@ -3,7 +3,7 @@ package com.example.menu_generator
 import org.springframework.web.bind.annotation.*
 
 data class FavoriteRecipeResponse (
-    val recipe_id: Int
+    val recipeId: Int
 )
 
 @RestController

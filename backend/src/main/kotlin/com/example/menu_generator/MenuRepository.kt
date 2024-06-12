@@ -53,7 +53,7 @@ class RestConfig {
 class RecipeRowMapper: RowMapper<Recipe> {
     override fun mapRow(rs: ResultSet, rowNum: Int): Recipe {
         return Recipe(
-            recipe_id = rs.getInt(1),
+            recipeId = rs.getInt(1),
             recipeName = rs.getString(2),
             description = rs.getString(3),
             ingredients = Arrays.asList(
