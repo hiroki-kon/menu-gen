@@ -1,10 +1,22 @@
 package com.example.menu_generator
 
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDate
 
 data class FavoriteRecipeResponse (
     val recipeId: Int
 )
+
+class WeeklyRecipesRequest {
+    val startAt: LocalDate
+    val recipes: Array<Recipe>
+
+    constructor(startAt: String, recipes: Array<Recipe>) {
+        this.startAt = LocalDate.parse(startAt)
+        this.recipes = recipes
+    }
+}
+
 
 @RestController
 @CrossOrigin(origins = arrayOf("*"))
@@ -38,10 +50,13 @@ class MenuController(val menuService: MenuService) {
     }
 
     @PostMapping("/weekly")
-    fun saveWeeklyRecipes(@RequestBody weeklyRecipes: WeeklyRecipes){
+    fun saveWeeklyRecipes(@RequestBody weeklyRecipes: WeeklyRecipesRequest){
         menuService.saveWeeklyRecipes(startAt = weeklyRecipes.startAt, recipes = weeklyRecipes.recipes)
+    }
 
-        return
+    @GetMapping("/weekly")
+    fun getWeeklyRecipes(): WeeklyRecipesResponse{
+        return menuService.getWeeklyRecipes()
     }
 
 }

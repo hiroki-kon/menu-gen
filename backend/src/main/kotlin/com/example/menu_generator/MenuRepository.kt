@@ -70,11 +70,32 @@ class RecipeRowMapper: RowMapper<Recipe> {
     }
 }
 
+@Component
+class WeeklyRecipeRowMapper: RowMapper<WeeklyRecipe> {
+    override fun mapRow(rs: ResultSet, rowNum: Int): WeeklyRecipe {
+        return WeeklyRecipe(
+            startAt = rs.getString(1),
+            name = rs.getString(2),
+            description = rs.getString(3),
+            ingredients = Arrays.asList(
+                rs.getArray(4))
+                .flatMap { e -> e.toString()
+                    .drop(1)
+                    .dropLast(1)
+                    .split(",")
+                }
+                .toTypedArray(),
+            dayNum = rs.getInt(5)
+        )
+    }
+}
+
 @Repository
 class MenuRepository(
     val restTemplate: RestTemplate,
     val jdbcTemplate: JdbcTemplate,
-    val recipeRowMapper: RecipeRowMapper
+    val recipeRowMapper: RecipeRowMapper,
+    val weeklyRecipeRowMapper: WeeklyRecipeRowMapper
 ) {
 
     fun getRecommendMenu(content: String): Array<Recipe> {
@@ -164,5 +185,16 @@ class MenuRepository(
                 index + 1
             )
         }
+    }
+
+    fun getWeeklyRecipes(): Array<WeeklyRecipe> {
+        val sql = """
+            select start_at, name, description, ingredients, day_num from weekly_recipes
+            join weekly_recipe on weekly_recipes.recipe_id = weekly_recipe.recipe_id
+            join week on weekly_recipes.week_id = week.week_id
+        """.trimIndent()
+
+        val recipes = jdbcTemplate.query(sql, weeklyRecipeRowMapper)
+        return recipes.toTypedArray()
     }
 }

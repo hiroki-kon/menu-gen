@@ -40,4 +40,19 @@ class MenuService(val menuRepository: MenuRepository) {
     fun saveWeeklyRecipes(startAt: LocalDate, recipes: Array<Recipe>) {
         menuRepository.saveWeeklyRecipes(startAt, recipes)
     }
+
+    fun getWeeklyRecipes(): WeeklyRecipesResponse {
+        val weeklyRecipes = menuRepository.getWeeklyRecipes()
+
+        return WeeklyRecipesResponse(
+            weeklyRecipes[0].startAt,
+            weeklyRecipes.map { e ->
+                Recipe(
+                    recipeName = e.recipeName,
+                    description = e.description,
+                    ingredients = e.ingredients
+
+                )
+            }.toTypedArray())
+    }
 }
