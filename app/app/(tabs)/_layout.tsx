@@ -22,9 +22,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="favorite"
         options={{
-          title: "Explore",
+          title: "お気に入り",
           tabBarActiveTintColor: "#1C1500",
           tabBarIcon: ({ color, focused }) => (
             <List
