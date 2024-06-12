@@ -3,9 +3,12 @@ import React from "react";
 
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { ChefHat, List, Utensils} from "@tamagui/lucide-icons";
+import { ChefHat, List, Utensils } from "@tamagui/lucide-icons";
+import { Button } from "tamagui";
+import { useSession } from "@/ctx";
 
 export default function TabLayout() {
+  const { signOut } = useSession();
   return (
     <Tabs>
       <Tabs.Screen
@@ -18,6 +21,9 @@ export default function TabLayout() {
               color={focused ? "$yellow9Light" : color}
               fill={focused ? "#F7CE00" : color}
             />
+          ),
+          headerRight: () => (
+            <Button onPress={() => signOut()}>サインアウト</Button>
           ),
         }}
       />
