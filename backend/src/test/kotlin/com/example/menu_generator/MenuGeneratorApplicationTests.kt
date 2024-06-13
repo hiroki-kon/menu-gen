@@ -1,43 +1,33 @@
 package com.example.menu_generator
 
+import com.jayway.jsonpath.JsonPath
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.boot.test.web.client.exchange
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.jdbc.Sql
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import java.time.LocalDate
+
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class MenuGeneratorApplicationTests(
 	@Autowired val restTemplate: TestRestTemplate,
-	@LocalServerPort val port: Int
+	@LocalServerPort val port: Int,
 ) {
-
 	@Test
 	fun contextLoads() {
 	}
-
-	@Test
-	fun `recomendへのGETリクエストはOKステータスを返す`() {
-		val response = restTemplate.getForEntity("http://localhost:$port/menus/recommend?query=test", String::class.java)
-		// レスポンスのステータスコードは OK である。
-		assertThat(response.statusCode, equalTo(HttpStatus.OK))
-	}
-
-//	TODO: このテストをしっかり行う
-//	@Test
-//	fun `recomendへのGETリクエストは文字を返す`() {
-//		val response = restTemplate.getForEntity("http://localhost:$port/menus/recommend?query=test", String::class.java)
-//		val body = response.body!!
-//		// レスポンスのステータスコードは OK である。
-//		assertThat(body, equalTo("hogehogehoge"))
-//	}
 
 	@Test
 	fun `weeklyへのPOSTリクエストはOKステータスを返す`() {
