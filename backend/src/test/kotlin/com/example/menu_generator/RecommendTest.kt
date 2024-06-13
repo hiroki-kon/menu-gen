@@ -28,7 +28,6 @@ class RecommendTest(
         mockMvc.perform(get("/menus/recommend?query=test")).andExpect(status().isOk())
     }
 
-    //	TODO: このテストをしっかり行う
     @Test
     fun `recommendへのGETリクエストはRecipeのリストを返す`() {
         `when`(menuService.getRecommendMenu("test"))
