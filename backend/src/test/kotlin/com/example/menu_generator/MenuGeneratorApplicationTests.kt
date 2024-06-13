@@ -6,9 +6,11 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.boot.test.web.client.exchange
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.test.context.jdbc.Sql
 import java.time.LocalDate
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -69,6 +71,53 @@ class MenuGeneratorApplicationTests(
 		assertThat(weeklyRecipe.recipes[0].recipeName, equalTo("hoge"))
 		assertThat(weeklyRecipe.recipes[0].description, equalTo("fuga"))
 		assertThat(weeklyRecipe.recipes[0].ingredients, equalTo(arrayOf("piyo")))
+	}
+
+	@Test
+	fun `favoriteへのPOSTリクエストはOKステータスを返す`() {
+		val request = Recipe (
+			recipeName = "hoge",
+			description = "fuga",
+			ingredients = arrayOf("piyo")
+		)
+		val response = restTemplate.postForEntity("http://localhost:$port/menus/favorites", request, Unit::class.java)
+		assertThat(response.statusCode, equalTo(HttpStatus.OK))
+	}
+
+	@Test
+	fun `favoriteへのGETリクエストはOKステータスを返す`() {
+		val response = restTemplate.getForEntity("http://localhost:$port/menus/favorites", Array<Recipe>::class.java)
+		assertThat(response.statusCode, equalTo(HttpStatus.OK))
+	}
+
+	@Sql("/get_favorite_test.sql")
+	@Test
+	fun `favoriteへのGETリクエストはRecipeオブジェクトのリストを返す`() {
+		val response = restTemplate.getForEntity("http://localhost:$port/menus/favorites", Array<Recipe>::class.java)
+		val recipes = response.body!!
+		assertThat(response.statusCode, equalTo(HttpStatus.OK))
+		assertThat(recipes[0].recipeName, equalTo("スパゲッティ"))
+		assertThat(recipes[0].description, equalTo("トマトソースを絡めたスパゲッティ"))
+		assertThat(recipes[0].ingredients, equalTo(arrayOf("スパゲッティ", "トマト")))
+	}
+
+	@Sql("/delete_favorite_test.sql")
+	@Test
+	fun `favoriteへのDELETEリクエストはOKステータスを返す`() {
+		val response = restTemplate.exchange("http://localhost:$port/menus/favorites/1", HttpMethod.DELETE, null, Unit::class.java)
+		assertThat(response.statusCode, equalTo(HttpStatus.OK))
+	}
+
+
+	@Sql("/delete_favorite_test.sql")
+	@Test
+	fun `favoriteへのDELETEリクエストは指定したfavoriteを削除する`() {
+		val response = restTemplate.exchange("http://localhost:$port/menus/favorites/1", HttpMethod.DELETE, null, Unit::class.java)
+		assertThat(response.statusCode, equalTo(HttpStatus.OK))
+
+		val getResponse = restTemplate.getForEntity("http://localhost:$port/menus/favorites", Array<Recipe>::class.java)
+		val recipes = getResponse.body!!
+		assertThat(recipes.size, equalTo(0))
 	}
 
 }
