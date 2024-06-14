@@ -16,12 +16,12 @@ import { useLocalSearchParams } from "expo-router";
 import { Recipe } from "@/types/recipe";
 import { LikeButton } from "@/components/LikeButton";
 import axios from "axios";
-import { LogBox } from 'react-native'
+import { LogBox } from "react-native";
 
 LogBox.ignoreLogs([
   "[Reanimated] Couldn't determine the version of the native part of Reanimated.",
   /Cannot update a component/,
-])
+]);
 
 export default function RecommendScreen() {
   const { data } = useLocalSearchParams();
@@ -34,11 +34,11 @@ export default function RecommendScreen() {
       <ScrollView height="85%" width="100%">
         <YGroup>
           {recipes.map((recipe, i) => (
-            <YGroup.Item key={i}>
+            <YGroup.Item key={`${recipe.recipeName}_${i}`}>
               <ListItem
                 icon={
                   <Checkbox
-                    id={`${i}`}
+                    id={`${recipe.recipeName}_${i}`}
                     size="$4"
                     onCheckedChange={(checked) => {
                       if (checked === true) {
@@ -99,7 +99,7 @@ export default function RecommendScreen() {
             const request = {
               startAt: `${date.getFullYear()}-${(date.getMonth() + 1)
                 .toString()
-                .padStart(2, "0")}-${(date.getDay() + 1)
+                .padStart(2, "0")}-${(date.getDate())
                 .toString()
                 .padStart(2, "0")}`,
               recipes: selectedRecipes.map((recipe) => ({

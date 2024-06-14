@@ -45,7 +45,7 @@ export default function FavoriteScreen() {
           <YGroup>
             {data?.map((recipe, i) => (
               <ListItem
-                key={i}
+                key={recipe.recipeId}
                 title={recipe.recipeName}
                 subTitle={recipe.description}
                 iconAfter={
