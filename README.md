@@ -1,5 +1,6 @@
 # 献立ジェネレーター
-
+デプロイしたAPIサーバー
+h ttps://menu-gen.onrender.com
 <img src="docs/images/top-screen.png" width="50%" />
 
 ## アプリの概要
